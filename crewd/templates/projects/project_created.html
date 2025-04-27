@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Project Created - {{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-success" role="alert">
+                <h4 class="alert-heading">Project Created Successfully!</h4>
+                <p>Your project "{{ project.title }}" has been created and is now visible to potential contributors.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Project Details</h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-2 text-muted">{{ project.title }}</h6>
+                    <p class="card-text">{{ project.description }}</p>
+                    
+                    <div class="mt-3">
+                        <h6>Required Skills:</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for skill in project.get_required_skills_list %}
+                            <span class="badge bg-primary">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <h6>Tech Stack:</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for tag in project.get_tags_list %}
+                            <span class="badge bg-secondary">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <p><strong>Team Size:</strong> {{ project.team_size }} members</p>
+                        <p><strong>Duration:</strong> {{ project.duration }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Recommended Contributors</h5>
+                </div>
+                <div class="card-body">
+                    {% if recommendations %}
+                        <div class="list-group">
+                            {% for rec in recommendations %}
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">{{ rec.profile.user.username }}</h6>
+                                        <small>{{ rec.match_score|floatformat:0 }}% match</small>
+                                    </div>
+                                    <small class="text-muted">
+                                        Matching skills: {{ rec.matching_skills|join:", " }}
+                                    </small>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No recommendations available yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="d-flex gap-3">
+                <a href="{% url 'projects:manage_project' project.id %}" class="btn btn-primary">
+                    Manage Project
+                </a>
+                <a href="{% url 'projects:find_contributors' project.id %}" class="btn btn-outline-primary">
+                    Find Contributors
+                </a>
+                <a href="{% url 'projects:dashboard_leader' %}" class="btn btn-outline-secondary">
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
